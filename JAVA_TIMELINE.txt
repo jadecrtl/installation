@@ -1,0 +1,188 @@
+https://www.youtube.com/watch?v=jUdohoDkg1o
+
+# ETAPE 1 : telecharger le paquet DEB correspondant à la version voulue
+
+
+
+# ETAPE 2 : se placer avec un terminal à côté du fichier téléchargé
+
+# ETAPE 3 : 
+sudo dpkg -i lefichier.deb 
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~$ cd Téléchargements/
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ ll
+total 152352
+drwxr-xr-x  2 jade jade      4096 déc.  26 12:51 ./
+drwxr-x--- 16 jade jade      4096 déc.  26 11:10 ../
+-rw-rw-r--  1 jade jade 155996900 déc.  26 12:51 jdk-17_linux-x64_bin.deb
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ sudo dpkg -i jdk-17_linux-x64_bin.deb 
+Sélection du paquet jdk-17 précédemment désélectionné.
+(Lecture de la base de données... 201664 fichiers et répertoires déjà installés.)
+Préparation du dépaquetage de jdk-17_linux-x64_bin.deb ...
+Dépaquetage de jdk-17 (17.0.5-ga) ...
+dpkg: des problèmes de dépendances empêchent la configuration de jdk-17 :
+ jdk-17 dépend de libc6-i386 ; cependant :
+  Le paquet libc6-i386 n'est pas installé.
+ jdk-17 dépend de libc6-x32 ; cependant :
+  Le paquet libc6-x32 n'est pas installé.
+
+dpkg: erreur de traitement du paquet jdk-17 (--install) :
+ problèmes de dépendances - laissé non configuré
+Des erreurs ont été rencontrées pendant l'exécution :
+ jdk-17
+
+# ETAPE 4 : il faut configurer la version (c'est le sens des messages à la fin)
+
+# on peut regarder ce qui a été installé :
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ ls /usr/lib/jvm
+java-1.11.0-openjdk-amd64  java-11-openjdk-amd64  jdk-11  jdk-17
+
+# on voit jdk-11 (anciennement) et jdk-17 qu'on va configurer
+
+# si on essaie directement la configuration on voit que 17 n'est pas présent
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ sudo update-alternatives --config java
+Il existe 2 choix pour l'alternative java (qui fournit /usr/bin/java).
+
+  Sélection   Chemin                                       Priorité  État
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-11-openjdk-amd64/bin/java   1111      mode automatique
+  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/java   1111      mode manuel
+* 2            /usr/lib/jvm/jdk-11/bin/java                  1         mode manuel
+
+# Il faut donc l'installer avec la commande --install comme suit
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-17/bin/java 1
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ sudo update-alternatives --config java
+Il existe 3 choix pour l'alternative java (qui fournit /usr/bin/java).
+
+  Sélection   Chemin                                       Priorité  État
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-11-openjdk-amd64/bin/java   1111      mode automatique
+  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/java   1111      mode manuel
+* 2            /usr/lib/jvm/jdk-11/bin/java                  1         mode manuel
+  3            /usr/lib/jvm/jdk-17/bin/java                  1         mode manuel
+
+Appuyez sur <Entrée> pour conserver la valeur par défaut[*] ou choisissez le numéro sélectionné :
+
+# il suffit de choisir "3" ici pour pointer sur jdk-17
+
+Appuyez sur <Entrée> pour conserver la valeur par défaut[*] ou choisissez le numéro sélectionné :3
+update-alternatives: utilisation de « /usr/lib/jvm/jdk-17/bin/java » pour fournir « /usr/bin/java » (java) en mode manuel
+
+# on regarde la configuration à nouveau :
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ sudo update-alternatives --config java
+Il existe 3 choix pour l'alternative java (qui fournit /usr/bin/java).
+
+  Sélection   Chemin                                       Priorité  État
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-11-openjdk-amd64/bin/java   1111      mode automatique
+  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/java   1111      mode manuel
+  2            /usr/lib/jvm/jdk-11/bin/java                  1         mode manuel
+* 3            /usr/lib/jvm/jdk-17/bin/java                  1         mode manuel
+
+Appuyez sur <Entrée> pour conserver la valeur par défaut[*] ou choisissez le numéro sélectionné :
+
+# on voit qu'on pointe bien correctement.
+
+# ETAPE 5 : Faire la meme chose avec javac (sinon le compilateur reste en 11)
+
+# on remplace java par javac trois fois dans la commande de l'ETAPE 4 :
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-17/bin/javac 1
+
+# et là encore on configure avec update-alternatives
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ sudo update-alternatives --config javac
+Il existe 3 choix pour l'alternative javac (qui fournit /usr/bin/javac).
+
+  Sélection   Chemin                                        Priorité  État
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-11-openjdk-amd64/bin/javac   1111      mode automatique
+  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/javac   1111      mode manuel
+* 2            /usr/lib/jvm/jdk-11/bin/javac                  1         mode manuel
+  3            /usr/lib/jvm/jdk-17/bin/javac                  1         mode manuel
+
+Appuyez sur <Entrée> pour conserver la valeur par défaut[*] ou choisissez le numéro sélectionné :
+
+# on saisit "3" à nouveau
+
+Appuyez sur <Entrée> pour conserver la valeur par défaut[*] ou choisissez le numéro sélectionné :3
+update-alternatives: utilisation de « /usr/lib/jvm/jdk-17/bin/javac » pour fournir « /usr/bin/javac » (javac) en mode manuel
+
+# ETAPE 6 : vérification finale
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ java --version
+java 17.0.5 2022-10-18 LTS
+Java(TM) SE Runtime Environment (build 17.0.5+9-LTS-191)
+Java HotSpot(TM) 64-Bit Server VM (build 17.0.5+9-LTS-191, mixed mode, sharing)
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ javac --version
+javac 17.0.5
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ 
+
+# ETAPE 7 : configurer JAVA_HOME
+
+# certains programmes se referent à cette variable d'environnement
+# il faut absolument la faire correspondre à la version de JAVA qui est utilisée
+
+# d'abord on regarde si la variable n'est pas déjà mise en placer
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ echo $JAVA_HOME
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ 
+
+# on ne voit pas de réponse, ici la variable est donc vide ou carément non renseignée
+
+# on se lance un update alternatives pour voir les adresses que peuvent prendre JAVA_HOME:
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ sudo update-alternatives --config java
+Il existe 3 choix pour l'alternative java (qui fournit /usr/bin/java).
+
+  Sélection   Chemin                                       Priorité  État
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-11-openjdk-amd64/bin/java   1111      mode automatique
+  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/java   1111      mode manuel
+  2            /usr/lib/jvm/jdk-11/bin/java                  1         mode manuel
+* 3            /usr/lib/jvm/jdk-17/bin/java                  1         mode manuel
+
+# JAVA_HOME sera constituée des chemins jusqu'à "bin" non inclus
+
+# renseignons JAVA_HOME avec notre jdk-17 :
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ sudo gedit /etc/environment
+
+(gedit:11343): dconf-WARNING **: 13:25:50.999: failed to commit changes to dconf: L’exécution du processus fils « dbus-launch » a échoué (Aucun fichier ou dossier de ce type)
+
+(gedit:11343): dconf-WARNING **: 13:25:51.018: failed to commit changes to dconf: L’exécution du processus fils « dbus-launch » a échoué (Aucun fichier ou dossier de ce type)
+
+(gedit:11343): dconf-WARNING **: 13:25:51.552: failed to commit changes to dconf: L’exécution du processus fils « dbus-launch » a échoué (Aucun fichier ou dossier de ce type)
+
+(gedit:11343): dconf-WARNING **: 13:25:51.562: failed to commit changes to dconf: L’exécution du processus fils « dbus-launch » a échoué (Aucun fichier ou dossier de ce type)
+
+(gedit:11343): dconf-WARNING **: 13:25:51.564: failed to commit changes to dconf: L’exécution du processus fils « dbus-launch » a échoué (Aucun fichier ou dossier de ce type)
+
+# les warnings sont à ignorer, gedit s'est ouvert :
+
+# on rajoute ceci à la fin du fichier :
+
+JAVA_HOME="/usr/lib/jvm/jdk-17/"
+
+# et on sauvegarde, on ferme gedit
+
+# si on regarde la variable, rien à changé
+# IL NE FAUT PAS OUBLIER de sourcer à nouveau le fichier :
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ source /etc/environment
+
+# et à ce moment c'est VRAIMENT TERMINE
+
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ echo $JAVA_HOME
+/usr/lib/jvm/jdk-17/
+jade@fabien-HP-Stream-Laptop-14-cb0XX:~/Téléchargements$ 
+
+
+# ETAPE 8 : si on veut changer de version il faut rappeller update-alternatives avec --config et AUSSI modifier le JAVA_HOME dans le fichier /etc/environnement puis le SOURCER.
+
+
