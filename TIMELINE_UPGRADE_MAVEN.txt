@@ -1,0 +1,54 @@
+https://linuxize.com/post/how-to-install-apache-maven-on-ubuntu-20-04/
+
+INSTALLER UNE NOUVELLE VERSION DE MAVEN
+
+1. télécharger une version stable de maven, le 20 juin 2023 c'est la version 3.8.8
+
+2. lancer la commande suivante depuis l'endroit ou l'archive a été placée
+
+        sudo tar xf apache-maven-*.tar.gz -C /opt
+
+3. creer un lien symbolique vers cette nouvelle version (ne pas se tromper de version)
+
+        sudo ln -s /opt/apache-maven-3.8.8 /opt/maven
+
+                depuis le repertoire /opt on a quelque chose comme cela
+
+                        jadec@ACERI3-JADE:/opt$ ll
+                        total 12
+                        drwxr-xr-x  3 root root 4096 Jun 20 22:42 ./
+                        drwxr-xr-x 19 root root 4096 Jun 20 22:30 ../
+                        drwxr-xr-x  6 root root 4096 Jun 20 22:40 apache-maven-3.8.8/
+                        lrwxrwxrwx  1 root root   23 Jun 20 22:42 maven -> /opt/apache-maven-3.8.8/
+
+4. mise en place des variables on suit la procedure suivante :
+
+        Next, we’ll need to set up the environment variables.
+        To do so, open your text editor and
+        create a new file named maven.sh in the /etc/profile.d/ directory.
+
+        sudo nano /etc/profile.d/maven.sh
+
+                export M2_HOME=/opt/maven
+                export MAVEN_HOME=/opt/maven
+                export PATH=${M2_HOME}/bin:${PATH}
+
+                Save and close the file. This script will be sourced at shell startup.
+
+                Make the script executable with chmod :
+
+                        sudo chmod +x /etc/profile.d/maven.sh
+
+                        Finally, load the environment variables using the source command:
+
+                                source /etc/profile.d/maven.sh
+
+5. a la fin on doit obtenir ceci
+
+jadec@ACERI3-JADE:~$ mvn -version
+
+Apache Maven 3.8.8 (4c87b05d9aedce574290d1acc98575ed5eb6cd39)
+Maven home: /opt/maven
+Java version: 17.0.7, vendor: Oracle Corporation, runtime: /usr/lib/jvm/jdk-17
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "5.10.102.1-microsoft-standard-wsl2", arch: "amd64", family: "unix"
